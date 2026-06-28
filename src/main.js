@@ -13,6 +13,7 @@ import {
 // État
 // ---------------------------------------------------------------------------
 let scenario = "avant"; // "avant" | "apres"
+let lastRenderWidth = 0; // largeur du conteneur au dernier rendu
 
 const fmt = (v) => format(",.1f")(v).replace(/,/g, " ");
 const fmtSigned = (v) => (v >= 0 ? "+" : "") + fmt(v);
@@ -151,18 +152,22 @@ function render() {
 
   const chart = select("#chart");
   chart.html("");
-  const width = chart.node().clientWidth || 900;
-  const height = Math.max(640, (recettes.length + depenses.length) * 17);
+  // Largeur minimale confortable : sur mobile le canevas dépasse l'écran et
+  // devient scrollable horizontalement (les 3 colonnes ne se télescopent plus).
+  const containerW = chart.node().clientWidth || 900;
+  const width = Math.max(containerW, 760);
+  lastRenderWidth = containerW;
+  const height = Math.max(660, (recettes.length + depenses.length) * 19);
 
   const { nodes, links } = buildGraph();
 
   const sankeyGen = sankey()
     .nodeId((d) => d.id)
     .nodeAlign(sankeyJustify)
-    .nodeWidth(20)
-    .nodePadding(11)
+    .nodeWidth(18)
+    .nodePadding(13)
     .extent([
-      [4, 12],
+      [4, 16],
       [width - 4, height - 12],
     ]);
 
@@ -174,7 +179,7 @@ function render() {
   const svg = chart
     .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("width", "100%")
+    .attr("width", width)
     .attr("height", height);
 
   // gradients par lien
@@ -240,11 +245,16 @@ function render() {
     .each(function (d) {
       const t = select(this);
       if (d.id === central.id) {
+        // Rotation verticale dans la barre centrale : ne chevauche plus les flux.
+        const cx = (d.x0 + d.x1) / 2;
+        const cy = (d.y0 + d.y1) / 2;
         t.attr("text-anchor", "middle")
-          .attr("x", (d.x0 + d.x1) / 2)
-          .attr("y", d.y0 - 6)
+          .attr("x", cx)
+          .attr("y", cy)
+          .attr("dy", "0.35em")
+          .attr("transform", `rotate(-90 ${cx} ${cy})`)
           .attr("class", "node-label central")
-          .text(`${central.label} · ${fmt(d.value)} Md€`);
+          .text("Budget des administrations publiques");
         return;
       }
       const v = valueOf(d);
@@ -321,12 +331,15 @@ function showDetail(ref) {
     }
     <p class="det-desc">${ref.description ?? ""}</p>
   `;
-  select("#detail").html(html);
-  select("#detclose").on("click", () => {
-    select("#detail").html(
-      `<p class="hint">Cliquez sur un flux ou un poste pour afficher le détail des changements et la référence doctrinale.</p>`,
-    );
-  });
+  select("#detail").html(html).classed("open", true);
+  select("#detclose").on("click", closeDetail);
+}
+
+const HINT_HTML =
+  '<p class="hint">Touchez un flux ou un poste pour afficher le détail des changements et la référence doctrinale.</p>';
+
+function closeDetail() {
+  select("#detail").classed("open", false).html(HINT_HTML);
 }
 
 // ---------------------------------------------------------------------------
@@ -345,7 +358,18 @@ function setScenario(s) {
 
 select("#btn-avant").on("click", () => setScenario("avant"));
 select("#btn-apres").on("click", () => setScenario("apres"));
-window.addEventListener("resize", () => render());
+
+// Ne re-rendre QUE si la largeur du conteneur change réellement.
+// Sur mobile, faire défiler la page modifie la hauteur (barre d'URL) sans
+// changer la largeur : on ignore ces événements pour éviter que le graphique
+// se reconstruise et que la page « saute » vers le haut.
+let resizeTimer;
+window.addEventListener("resize", () => {
+  const w = select("#chart").node()?.clientWidth || 0;
+  if (Math.abs(w - lastRenderWidth) < 2) return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(render, 180);
+});
 
 document.title = meta.title;
 setScenario("avant");
