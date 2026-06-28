@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulation budgétaire — doctrines (Sankey avant/après)</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23db2777'/><rect x='3' y='3' width='3' height='10' fill='white'/><rect x='10' y='6' width='3' height='7' fill='white'/></svg>"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="titles">
+          <h1>Simulation budgétaire des doctrines</h1>
+          <p class="subtitle">
+            Sphère publique française (S13) — diagramme de Sankey
+            <strong>avant / après</strong>, en Md€.
+          </p>
+        </div>
+        <div class="scenario-switch" role="tablist" aria-label="Scénario">
+          <button id="btn-avant" class="seg" role="tab" aria-selected="true">
+            Avant
+          </button>
+          <button id="btn-apres" class="seg" role="tab" aria-selected="false">
+            Après
+          </button>
+        </div>
+      </header>
+
+      <section class="kpis" id="kpis"></section>
+
+      <main class="layout">
+        <div class="chart-wrap">
+          <div id="chart" aria-label="Diagramme de Sankey du budget public"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+        <aside class="detail" id="detail">
+          <p class="hint">
+            Cliquez sur un flux ou un poste pour afficher le détail des
+            changements et la référence doctrinale.
+          </p>
+        </aside>
+      </main>
+
+      <footer class="foot">
+        <p>
+          <strong>Avant</strong> = système actuel (ordres de grandeur INSEE
+          2024-2025). <strong>Après</strong> = régime cible des trois notes de
+          doctrine (retraites, revenu universel, fiscalité). Montants
+          programmatiques, non actuariels. Diagramme inspiré de
+          <em>wald52/Sankey-finances-publique</em>.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
