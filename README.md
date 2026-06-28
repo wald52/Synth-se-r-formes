@@ -23,12 +23,29 @@ changement.
 
 ## Lancer le projet
 
+Le site est **100 % statique** : aucune étape de build n'est nécessaire. Les
+bibliothèques `d3` / `d3-sankey` sont fournies par un bundle local
+(`lib/d3-bundle.js`) résolu via un *import map*, et les feuilles de style et
+modules sont chargés en chemins relatifs. La page fonctionne donc servie telle
+quelle (y compris par GitHub Pages depuis la racine de la branche).
+
 ```bash
-npm install
-npm run dev      # serveur de développement
-npm run build    # build de production dans dist/
-npm run preview  # prévisualiser le build
+# N'importe quel serveur statique suffit :
+python3 -m http.server 5173   # puis http://127.0.0.1:5173/
+# ou : npm run dev
 ```
+
+Pour régénérer le bundle d3 après une mise à jour des dépendances :
+
+```bash
+npm install        # installe d3, d3-sankey, esbuild (devDependencies)
+npm run vendor     # reconstruit lib/d3-bundle.js
+```
+
+### Déploiement GitHub Pages
+
+Rien de particulier à configurer : les fichiers statiques du dépôt sont servis
+directement. `.nojekyll` garantit que GitHub sert les fichiers tels quels.
 
 ## Résultat de synthèse
 

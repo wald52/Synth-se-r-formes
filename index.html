@@ -8,6 +8,18 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23db2777'/><rect x='3' y='3' width='3' height='10' fill='white'/><rect x='10' y='6' width='3' height='7' fill='white'/></svg>"
     />
+    <!-- Site 100 % statique : aucune étape de build requise. Les libs d3 /
+         d3-sankey sont fournies par un bundle local et résolues via importmap,
+         de sorte que la page fonctionne servie telle quelle (GitHub Pages). -->
+    <link rel="stylesheet" href="./src/styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "d3": "./lib/d3-bundle.js",
+          "d3-sankey": "./lib/d3-bundle.js"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="app">
@@ -58,6 +70,6 @@
         </p>
       </footer>
     </div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>

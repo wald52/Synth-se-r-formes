@@ -1,19 +1,16 @@
 {
   "name": "synthese-reformes-sankey",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Simulation budgétaire avant/après des doctrines (retraites, revenu universel, fiscalité) en diagramme de Sankey.",
+  "description": "Simulation budgétaire avant/après des doctrines (retraites, revenu universel, fiscalité) en diagramme de Sankey. Site 100% statique, sans étape de build.",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
-  },
-  "dependencies": {
-    "d3": "^7.9.0",
-    "d3-sankey": "^0.12.3"
+    "dev": "python3 -m http.server 5173",
+    "vendor": "esbuild lib/_d3-entry.js --bundle --format=esm --minify --outfile=lib/d3-bundle.js"
   },
   "devDependencies": {
-    "vite": "^7.0.0"
+    "d3": "^7.9.0",
+    "d3-sankey": "^0.12.3",
+    "esbuild": "^0.25.0"
   }
 }

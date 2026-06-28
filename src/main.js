@@ -1,4 +1,3 @@
-import "./styles.css";
 import { select, format } from "d3";
 import { sankey, sankeyLinkHorizontal, sankeyJustify } from "d3-sankey";
 import {
